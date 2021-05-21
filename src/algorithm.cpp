@@ -1,5 +1,6 @@
 #include "algorithm.hpp"
 #include <iostream>
+#include <corecrt_search.h>
 
 // файл с определениями
 
