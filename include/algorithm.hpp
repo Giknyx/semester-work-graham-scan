@@ -26,12 +26,12 @@ namespace itis {
 
   /**
    * Function to calculate the orientation of the turn that three points are making (ccw for counterclockwise)
-   * @param p0
+   * @param p00
    * @param p1
    * @param p2
    * @return 0 if all points are collinear, 1 if they are making clockwise turn, 2 if counterclockwise
    */
-  int ccw(Point p0, Point p1, Point p2);
+  int ccw(Point p00, Point p1, Point p2);
 
   /**
    * Swap two points
@@ -49,16 +49,14 @@ namespace itis {
   int dist(Point p1, Point p2);
 
   /**
-   * Compare function for qsort_s. We need to have access to p0 (leftmost lowest point)
-   * to compare points p1 and p2 by their angle with p0.
-   * @param vp0 - additional parameter for passing p0 to the compare function
+   * Compare function for qsort_s.
    * @param vp1 - first point to compare
    * @param vp2 - second point to compare
    * @return -1 if point p1 has smaller angle with p0 than p2
    *          1 if point p2 has smaller angle with p0 than p1
    *          if they are collinear then returns -1 if p1 is the farthest from p0, 1 if p2 is the farthest from p0
    */
-  int compare(void *vp0, const void *vp1, const void *vp2);
+  int compare(const void *vp1, const void *vp2);
 
   /**
    * Struct for the algorithm.
@@ -95,7 +93,6 @@ namespace itis {
 
    private:
     int size_{0};
-    Point p0; // Leftmost lowest point
     std::vector<Point> points;
     std::stack<Point> S;
 

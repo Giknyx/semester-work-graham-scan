@@ -1,7 +1,5 @@
 #include "algorithm.hpp"
 #include <iostream>
-#include <stdlib.h>
-#include <search.h>
 
 // файл с определениями
 
@@ -14,8 +12,10 @@ namespace itis {
     return res;
   }
 
-  int ccw(Point p0, Point p1, Point p2) {
-    int val = (p1.y - p0.y) * (p2.x - p1.x) - (p1.x - p0.x) * (p2.y - p1.y);
+  Point p0; // Leftmost lowest point (it is global because we need it in out compare function for qsort)
+
+  int ccw(Point p00, Point p1, Point p2) {
+    int val = (p1.y - p00.y) * (p2.x - p1.x) - (p1.x - p00.x) * (p2.y - p1.y);
 
     if (val == 0) {
       return 0;  // collinear
@@ -34,15 +34,14 @@ namespace itis {
     return (p1.x - p2.x) * (p1.x - p2.x) + (p1.y - p2.y) * (p1.y - p2.y);
   }
 
-  int compare(void *vp0, const void *vp1, const void *vp2) {
-    Point *p0 = (Point *) vp0;
+  int compare(const void *vp1, const void *vp2) {
     Point *p1 = (Point *) vp1;
     Point *p2 = (Point *) vp2;
 
     // Find orientation
-    int o = ccw(*p0, *p1, *p2);
+    int o = ccw(p0, *p1, *p2);
     if (o == 0) {
-      return (dist(*p0, *p2) >= dist(*p0, *p1)) ? -1 : 1;
+      return (dist(p0, *p2) >= dist(p0, *p1)) ? -1 : 1;
     }
 
     return (o == 2) ? -1 : 1;
@@ -68,7 +67,7 @@ namespace itis {
     // before p2 in sorted output if p2 has larger polar angle (in
     // counterclockwise direction) than p1
     p0 = points[0];
-    qsort_s(&points[1], size_ - 1, sizeof(Point), compare, &p0);
+    qsort(&points[1], size_ - 1, sizeof(Point), compare);
 
     // If two or more points make same angle with p0,
     // Remove all but the one that is farthest from p0
