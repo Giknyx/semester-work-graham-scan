@@ -80,9 +80,9 @@ int main(int argc, char **argv) {
         std::getline(input_file, join_line);
         int num1 = 0;
         int num2 = 0;
-        auto create_set_ss = stringstream(join_line);
-        create_set_ss >> num1;
-        create_set_ss >> num2;
+        auto ss = stringstream(join_line);
+        ss >> num1;
+        ss >> num2;
         x_coord.push_back(num1);
         y_coord.push_back(num2);
       }

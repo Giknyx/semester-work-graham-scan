@@ -41,22 +41,22 @@ namespace itis {
   void swap(Point &p1, Point &p2);
 
   /**
-   * Distance between two points
+   * Squared distance between two points
    * @param p1
    * @param p2
    * @return distance
    */
-  int dist(Point p1, Point p2);
+  int dist_sq(Point p1, Point p2);
 
   /**
-   * Compare function for qsort_s.
-   * @param vp1 - first point to compare
-   * @param vp2 - second point to compare
-   * @return -1 if point p1 has smaller angle with p0 than p2
-   *          1 if point p2 has smaller angle with p0 than p1
-   *          if they are collinear then returns -1 if p1 is the farthest from p0, 1 if p2 is the farthest from p0
+   * Compare function for sort.
+   * @param p1 - first point to compare
+   * @param p2 - second point to compare
+   * @return true if point p1 has smaller angle with p0 than p2
+   *         false if point p2 has smaller angle with p0 than p1
+   *         if they are collinear then returns false if p1 is the farthest from p0, true if p2 is the farthest from p0
    */
-  int compare(const void *vp1, const void *vp2);
+  bool compare(const Point &p1, const Point &p2);
 
   /**
    * Struct for the algorithm.

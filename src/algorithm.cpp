@@ -1,5 +1,6 @@
 #include "algorithm.hpp"
 #include <iostream>
+#include <algorithm>
 
 // файл с определениями
 
@@ -30,21 +31,22 @@ namespace itis {
     p2 = temp;
   }
 
-  int dist(Point p1, Point p2) {
+  int dist_sq(Point p1, Point p2) {
     return (p1.x - p2.x) * (p1.x - p2.x) + (p1.y - p2.y) * (p1.y - p2.y);
   }
 
-  int compare(const void *vp1, const void *vp2) {
-    Point *p1 = (Point *) vp1;
-    Point *p2 = (Point *) vp2;
-
+  bool compare(const Point &p1, const Point &p2) {
     // Find orientation
-    int o = ccw(p0, *p1, *p2);
+    int o = ccw(p0, p1, p2);
+
+    // If points are collinear with p0, then we want to have the farthest point
+    // We put the farthest point in the end of the sequence of collinear points, so we can use it later
     if (o == 0) {
-      return (dist(p0, *p2) >= dist(p0, *p1)) ? -1 : 1;
+      return (dist_sq(p0, p1) < dist_sq(p0, p2));
     }
 
-    return (o == 2) ? -1 : 1;
+    // If we make counterclockwise turn (p0->p1->p2), then p1 has smaller polar angle with p0 than p2
+    return (o == 2);
   }
 
   void Graham::add_point(int x, int y) {
@@ -67,18 +69,18 @@ namespace itis {
     // before p2 in sorted output if p2 has larger polar angle (in
     // counterclockwise direction) than p1
     p0 = points[0];
-    qsort(&points[1], size_ - 1, sizeof(Point), compare);
+    sort(points.begin()+1, points.end(), compare);
 
     // If two or more points make same angle with p0,
-    // Remove all but the one that is farthest from p0
+    // Remove all but the one that is farthest from p0 (we put it in the end of the sequence of collinear points)
     int m = 1; // Initialize size of modified array
     for (int i=1; i<size_; i++)
     {
-      // Keep increasing i while angle of i and i+1 is same with respect to p0
+      // Keep increasing i while angle of i and i+1 is same with respect to p0 (moving along the line)
       while (i < size_-1 && ccw(p0, points[i], points[i+1]) == 0) {
         i++;
       }
-      points[m] = points[i];
+      points[m] = points[i]; // Put the farthest point into modified array
       m++;  // Update size of modified array
     }
 
