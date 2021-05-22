@@ -6,6 +6,7 @@
 #include <sstream>      // stringstream
 #include <errno.h>      // for errno
 #include <stdlib.h>     // for strtol
+#include <vector>
 
 // подключаем алгоритм
 #include "algorithm.hpp"
@@ -60,6 +61,8 @@ int main(int argc, char **argv) {
     string str_num_elem;
     str_num_elem = to_string(num_elem);
     Graham* graham;
+    vector<int> x_coord;
+    vector<int> y_coord;
 
     // Тестируем каждый набор данных
     for (int i = 1; i <= num_datasets; i++) {
@@ -71,8 +74,7 @@ int main(int argc, char **argv) {
         throw std::invalid_argument("No matching dataset.");
       }
 
-      // Добавляем все точки из набора данных в структуру
-      graham = new Graham();
+      // Добавляем координаты всех точек из набора данных в массивы
       string join_line;
       for (int j = 0; j < num_elem; j++) {
         std::getline(input_file, join_line);
@@ -81,14 +83,19 @@ int main(int argc, char **argv) {
         auto create_set_ss = stringstream(join_line);
         create_set_ss >> num1;
         create_set_ss >> num2;
-        graham->add_point(num1, num2);
+        x_coord.push_back(num1);
+        y_coord.push_back(num2);
       }
 
       double result;
       double average = 0;
 
-      // Делаем нужное количество попыток
+      // Делаем нужное количество попыток, на каждую заново заполняем структуру
       for (int j = 0; j < num_trials; j++) {
+        graham = new Graham();
+        for (int k = 0; k < num_elem; k++) {
+          graham->add_point(x_coord[k], y_coord[k]);
+        }
         const auto time_point_before = chrono::high_resolution_clock::now();
         graham->convex_hull();
         const auto time_point_after = chrono::high_resolution_clock::now();
@@ -98,13 +105,15 @@ int main(int argc, char **argv) {
         result = result/1000000;
         average += result;
         output_file << result << endl;
+        delete graham;
       }
 
       // Выводим среднее значение, очищаем структуру, готовимся к следующему набору данных
       output_file << "Average: " << average/num_trials;
-      delete graham;
       output_file.close();
       input_file.close();
+      x_coord.clear();
+      y_coord.clear();
     }
   }
 
